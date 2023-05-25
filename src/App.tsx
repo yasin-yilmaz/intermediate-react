@@ -1,9 +1,12 @@
+import PostList from "./react-query/PostList";
+import TodoLIst from "./react-query/TodoLIst";
+
 const App = () => {
 	return (
 		<div className="app">
-			<h2>Hello from App</h2>
-			<h2>ENV test</h2>
-			<p>{process.env.ENV_TEST}</p>
+			<h2>App</h2>
+			{/* <TodoLIst /> */}
+			<PostList />
 		</div>
 	);
 };
