@@ -4,18 +4,14 @@ import axios from "axios";
 // import types
 import { PostsType as Post } from "../types/types";
 
-const usePosts = (userId: number | undefined) => {
+const usePosts = () => {
 	const fetchData = () =>
 		axios
-			.get<Post[]>("https://jsonplaceholder.typicode.com/posts", {
-				params: {
-					userId: userId || null,
-				},
-			})
+			.get<Post[]>("https://jsonplaceholder.typicode.com/posts")
 			.then((res) => res.data);
 
 	return useQuery<Post[], Error>({
-		queryKey: userId ? ["users", userId, "posts"] : ["posts"],
+		queryKey: ["posts"],
 		queryFn: fetchData,
 	});
 };
