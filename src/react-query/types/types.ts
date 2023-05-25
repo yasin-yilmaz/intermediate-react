@@ -11,3 +11,8 @@ export type PostsType = {
 	body: string;
 	userId: number;
 };
+
+export type PostQuery = {
+	page: number;
+	pageSize: number;
+};

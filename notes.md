@@ -1,14 +1,14 @@
-## React Query
+# React Query
 
-### install and initial react-query
+## install and initial react-query
 
 ```bash
 npm i @tanstack/react-query
 ```
 
-index.ts
+### index.ts
 
-```Javascript
+```tsx
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const queryClient = new QueryClient();
 
@@ -21,9 +21,9 @@ root.render(
 )
 ```
 
-### create query
+## create query
 
-```typescript jsx
+```ts
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -50,7 +50,7 @@ console.log(query.data)
 
 ### with error and isLoading
 
-```typescript
+```ts
 const {
  data: todos,
  error,
@@ -76,9 +76,9 @@ return;
 npm i @tanstack/react-query-devtools
 ```
 
-index.ts
+### index.ts
 
-```typescript
+```tsx
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 /**
  * */
@@ -90,13 +90,13 @@ root.render(
 );
 ```
 
-on Browser a flower icon
+_on Browser a flower icon_
 
 ## queryClient options
 
-index.ts
+### index.ts
 
-```typescript
+```js
 const queryClient = new QueryClient({
  defaultOptions: {
   queries: {
@@ -115,7 +115,7 @@ const queryClient = new QueryClient({
 
 ### Posts.tsx
 
-```typescript jsx
+```tsx
 const [userId, setUserId] = useState<number>();
 
 const { data: posts } = usePosts(userId);
@@ -147,7 +147,7 @@ return (
 
 ### usePosts.ts
 
-```typescript
+```ts
 import { PostsType as Post } from "../types/types";
 
 const usePosts = (userId: number | undefined) => {
@@ -162,4 +162,64 @@ const usePosts = (userId: number | undefined) => {
    })
  });
 };
+```
+
+## Pagination
+
+### Posts.tsx
+
+```tsx
+const pageSize = 10; // sample value. normaly must dynamic
+const [page, setPage] = useState(1);
+
+const { data: posts, isLoading, error } = usePosts({ page, pageSize }); // send the usePosts
+
+return (
+ <>
+  <div className="mt-3" role="group">
+   <button
+    disabled={page === 1}
+    type="button"
+    className="btn btn-primary"
+    onClick={() => setPage((prev) => prev - 1)}
+   >
+    Previous
+   </button>
+   <button
+    type="button"
+    disabled={posts.length === 0}
+    className="btn btn-primary ms-1"
+    onClick={() => setPage((prev) => prev + 1)}
+   >
+    Next
+   </button>
+  </div>
+ </>
+);
+```
+
+### usePosts.ts
+
+```ts
+export type PostQuery = {
+ page: number;
+ pageSize: number;
+};
+
+const fetchData = (query: PostQuery) =>
+ axios
+  .get<Post[]>("https://jsonplaceholder.typicode.com/posts", {
+   params: {
+    _start: (query.page - 1) * query.pageSize,
+    _limit: query.pageSize
+   }
+   //  _start and _limit are parameters of jsonplaceholder
+  })
+  .then((res) => res.data);
+
+return useQuery<Post[], Error>({
+ queryKey: ["posts", query],
+ queryFn: fetchData,
+ keepPreviousData: true // to keep the old data on the page until the new data is downloaded
+});
 ```
